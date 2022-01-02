@@ -7,6 +7,7 @@
 
 <script>
 import { fetchWrapper } from "@/helpers/fetch-wrapper";
+import { GRANT_ADMIN } from "@/store/action-types";
 
 export default {
   name: "member",
@@ -23,9 +24,7 @@ export default {
       fetchWrapper.get("/member").then((data) => (this.nickname = data.data));
     },
     grantAdmin() {
-      fetchWrapper
-        .post("/member/authority/admin")
-        .then(() => alert("updated!"));
+      this.$store.dispatch(GRANT_ADMIN);
     },
   },
 };

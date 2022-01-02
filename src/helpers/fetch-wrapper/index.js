@@ -52,7 +52,7 @@ function _delete(url, options) {
 
 function fetchAndWrapResponse(url, requestOptions) {
   const options = { ...requestOptions };
-  const token = store.state.token;
+  const token = store.state.auth.token;
   if (token) {
     options.headers = {
       ...options.headers,

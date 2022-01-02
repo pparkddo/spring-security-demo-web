@@ -5,16 +5,23 @@ import store from "@/store";
 import { LOGIN, LOGOUT } from "@/store/mutation-types";
 
 const domain = new URL(window.location.href);
-const oAuthUrl = new URL("http://localhost:8080/oauth2/authorization/google");
+const oAuthLocation = "http://localhost:8080/oauth2/authorization/google";
 
-const loginIfTokenExists = (token) => {
-  if (token) {
-    store.commit(LOGIN, token);
-  }
+const login = (auth) => {
+  store.commit(LOGIN, auth);
 };
 
 const redirectToLogin = (to, from, next) => {
-  loginIfTokenExists(to.query.token);
+  const token = to.query.token;
+  const authorities =
+    to.query.authorities !== undefined
+      ? parseAuthorities(to.query.authorities)
+      : [];
+  const isAuthExists = token !== undefined && authorities.length !== 0;
+
+  if (isAuthExists) {
+    login({ token: token, authorities: authorities });
+  }
 
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
   if (!requiresAuth) {
@@ -35,8 +42,13 @@ const redirectToLogin = (to, from, next) => {
   });
 };
 
+const parseAuthorities = (authorities) => {
+  return authorities.split(",");
+};
+
 const redirectToOAuthLogin = () => (to, from) => {
   const fullPathWithDomain = new URL(from.fullPath, domain).toString();
+  const oAuthUrl = new URL(oAuthLocation);
   oAuthUrl.searchParams.append("redirect_uri", fullPathWithDomain);
   window.location = oAuthUrl;
 };

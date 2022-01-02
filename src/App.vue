@@ -1,11 +1,18 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link>
-    | <router-link to="/member">Member</router-link>
-    | <router-link to="/admin">Admin</router-link>
-  </div>
+  <navigation />
   <router-view />
 </template>
+
+<script>
+import navigation from "@/components/navigation";
+
+export default {
+  name: "app",
+  components: {
+    navigation: navigation,
+  },
+};
+</script>
 
 <style>
 #app {
